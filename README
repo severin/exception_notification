@@ -7,6 +7,7 @@ application. The plugin is configurable, allowing programmers to specify:
 * the sender address of the email
 * the recipient addresses
 * the text used to prefix the subject line
+* a condition when to send the email
 
 The email includes information about the current request, session, and
 environment, and also gives a backtrace of the exception.
@@ -38,6 +39,9 @@ just set any or all of the following values:
 
   # defaults to "[ERROR] "
   ExceptionNotifier.email_prefix = "[APP] "
+  
+  # defaults to lambda { true }
+  ExceptionNotifier.condition = lambda { |request, error| request.xhr? ? false : true }
 
 Email notifications will only occur when the IP address is determined not to
 be local. You can specify certain addresses to always be local so that you'll

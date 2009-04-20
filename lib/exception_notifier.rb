@@ -32,6 +32,9 @@ class ExceptionNotifier < ActionMailer::Base
 
   @@sections = %w(request session environment backtrace)
   cattr_accessor :sections
+  
+  @@condition = Proc.new { |request, error| true }
+  cattr_accessor :condition
 
   self.template_root = "#{File.dirname(__FILE__)}/../views"
 
@@ -55,6 +58,7 @@ class ExceptionNotifier < ActionMailer::Base
   private
 
     def sanitize_backtrace(trace)
+      return [] unless trace
       re = Regexp.new(/^#{Regexp.escape(rails_root)}/)
       trace.map { |line| Pathname.new(line.gsub(re, "[RAILS_ROOT]")).cleanpath.to_s }
     end
